@@ -80,6 +80,27 @@ const displayMovement = function (move) {
 };
 
 displayMovement(account1.movements);
+
+const createUserNames = function (accs) {
+  accs.forEach(function (user) {
+    user.userName = user.owner
+      .toLocaleLowerCase()
+      .split(' ')
+      .map(word => word[0])
+      .join('');
+  });
+};
+
+createUserNames(accounts);
+
+const calcPrintBalance = function (mov) {
+  const balance = mov.reduce((acc, movement) => {
+    return acc + movement;
+  }, 0);
+  labelBalance.textContent = `${balance} EUR`;
+};
+
+calcPrintBalance(account1.movements);
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // LECTURES
