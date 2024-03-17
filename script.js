@@ -79,8 +79,6 @@ const displayMovement = function (move) {
   });
 };
 
-displayMovement(account1.movements);
-
 const createUserNames = function (accs) {
   accs.forEach(function (user) {
     user.userName = user.owner
@@ -100,9 +98,8 @@ const calcPrintBalance = function (mov) {
   labelBalance.textContent = `${balance} £`;
 };
 
-calcPrintBalance(account1.movements);
-
-const calcDisplaySummary = function (movements) {
+const calcDisplaySummary = function (account) {
+  const movements = account.movements;
   const income = movements
     .filter(mov => mov > 0)
     .reduce((acc, mov) => acc + mov, 0);
@@ -115,13 +112,36 @@ const calcDisplaySummary = function (movements) {
 
   const interest = movements
     .filter(mov => mov > 0)
-    .map(deposite => deposite * (1.2 / 100))
+    .map(deposite => deposite * (account.interestRate / 100))
     .filter(int => int >= 1)
     .reduce((acc, int) => acc + int, 0);
   labelSumInterest.textContent = `${interest} £`;
 };
 
-calcDisplaySummary(account1.movements);
+let currentAccount;
+btnLogin.addEventListener('click', function (e) {
+  e.preventDefault();
+  currentAccount = accounts.find(
+    acc => acc.userName === inputLoginUsername.value
+  );
+
+  if (currentAccount?.pin === Number(inputLoginPin.value)) {
+    inputLoginPin.value = inputLoginUsername.value = '';
+    inputLoginPin.blur();
+    //Display Login Message
+    labelWelcome.textContent = `Welcome back , ${
+      currentAccount.owner.split(' ')[0]
+    }`;
+    containerApp.style.opacity = 100;
+    //Diplay movements
+    displayMovement(currentAccount.movements);
+    //Display Balance
+    calcPrintBalance(currentAccount.movements);
+    //Display Summary
+    calcDisplaySummary(currentAccount);
+  }
+});
+
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // LECTURES
