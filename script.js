@@ -91,11 +91,13 @@ const createUserNames = function (accs) {
 
 createUserNames(accounts);
 
-const calcPrintBalance = function (mov) {
+const calcPrintBalance = function (account) {
+  const mov = account.movements;
   const balance = mov.reduce((acc, movement) => {
     return acc + movement;
   }, 0);
   labelBalance.textContent = `${balance} £`;
+  account.balance = balance;
 };
 
 const calcDisplaySummary = function (account) {
@@ -136,12 +138,36 @@ btnLogin.addEventListener('click', function (e) {
     //Diplay movements
     displayMovement(currentAccount.movements);
     //Display Balance
-    calcPrintBalance(currentAccount.movements);
+    calcPrintBalance(currentAccount);
     //Display Summary
     calcDisplaySummary(currentAccount);
   }
 });
 
+btnTransfer.addEventListener('click', function (e) {
+  e.preventDefault();
+  const amount = Number(inputTransferAmount.value);
+  const constReciverAccount = accounts.find(
+    acc => acc.userName === inputTransferTo.value
+  );
+  inputTransferAmount.textContent = '';
+  inputTransferTo.textContent = '';
+  if (
+    amount > 0 &&
+    constReciverAccount &&
+    currentAccount.balance >= amount &&
+    constReciverAccount.userName !== currentAccount.userName
+  ) {
+    console.log('ready for money transfer');
+    currentAccount.movements.push(-amount);
+    constReciverAccount.movements.push(amount);
+    displayMovement(currentAccount.movements);
+    //Display Balance
+    calcPrintBalance(currentAccount);
+    //Display Summary
+    calcDisplaySummary(currentAccount);
+  }
+});
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // LECTURES
