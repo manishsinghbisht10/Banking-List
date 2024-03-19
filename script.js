@@ -61,7 +61,8 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
-const displayMovement = function (move) {
+const displayMovement = function (movements, sort = false) {
+  const move = sort ? movements.slice().sort((a, b) => a - b) : movements;
   console.log(move);
   containerMovements.innerHTML = '';
   move.forEach(function (move, index) {
@@ -199,6 +200,14 @@ btnClose.addEventListener('close', function (e) {
   inputCloseUsername.value = '';
   inputClosePin.value = '';
 });
+
+let sortedState = false;
+btnSort.addEventListener('click', function (e) {
+  e.preventDefault();
+  displayMovement(currentAccount.movements, !sortedState);
+  sortedState = !sortedState;
+});
+
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // LECTURES
