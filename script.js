@@ -73,6 +73,22 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
+const formatMovementDate = function (date) {
+  const calcDaysPassed = (date1, date2) =>
+    Math.round(Math.abs(date1 - date2) / (1000 * 60 * 60 * 24));
+
+  const constDaysPassed = calcDaysPassed(new Date(), date);
+  console.log(constDaysPassed);
+  if (constDaysPassed === 0) return 'Today';
+  if (constDaysPassed === 1) return 'Yesterday';
+  if (constDaysPassed <= 7) return `${constDaysPassed} Days ago`;
+  else {
+    const day = `${date.getDate()}`.padStart(2, 0);
+    const month = `${date.getMonth() + 1}`.padStart(2, 0);
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  }
+};
 const displayMovement = function (acc, sort = false) {
   const move = sort
     ? acc.movements.slice().sort((a, b) => a - b)
@@ -82,10 +98,7 @@ const displayMovement = function (acc, sort = false) {
   move.forEach(function (move, index) {
     const type = move > 0 ? 'deposit' : 'withdrawal';
     const date = new Date(acc.movementsDates[index]);
-    const day = `${date.getDate()}`.padStart(2, 0);
-    const month = `${date.getMonth() + 1}`.padStart(2, 0);
-    const year = date.getFullYear();
-    const displayDate = `${day}/${month}/${year}`;
+    const displayDate = formatMovementDate(date);
     const html = `
       <div class="movements__row">
         <div class="movements__type movements__type--${type}">${
@@ -169,13 +182,20 @@ btnLogin.addEventListener('click', function (e) {
     }`;
     containerApp.style.opacity = 100;
     const now = new Date();
-    const day = `${now.getDate()}`.padStart(2, 0);
-    const month = `${now.getMonth() + 1}`.padStart(2, 0);
-    const year = now.getFullYear();
-    const hours = `${now.getHours()}`.padStart(2, 0);
-    const minutes = `${now.getMinutes()}`.padStart(2, 0);
-    const todayDate = `${day}/${month}/${year}, ${hours}:${minutes}`;
-    labelDate.textContent = todayDate;
+    const options = {
+      hour: 'numeric',
+      minute: 'numeric',
+      day: 'numeric',
+      month: 'numeric',
+      year: 'numeric',
+      week: 'numeric',
+    };
+    const locale = navigator.language;
+
+    labelDate.textContent = new Intl.DateTimeFormat(locale, options).format(
+      now
+    );
+
     //Diplay movements
     displayMovement(currentAccount);
     //Display Balance
