@@ -159,7 +159,7 @@ const calcDisplaySummary = function (account) {
     .filter(mov => mov < 0)
     .reduce((acc, mov) => acc + mov, 0);
   labelSumOut.textContent = `${formatCur(
-    math.abs(out),
+    Math.abs(out),
     account.locale,
     account.currency
   )}`;
@@ -261,18 +261,21 @@ btnTransfer.addEventListener('click', function (e) {
 btnLoan.addEventListener('click', function (e) {
   e.preventDefault();
   const amount = Math.floor(inputLoanAmount.value); //floor does type cohersion
+  console.log(amount);
   if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
-    //add movement;
-    currentAccount.movements.push(amount);
+    setTimeout(function () {
+      //add movement;
+      currentAccount.movements.push(amount);
 
-    //add date
-    currentAccount.movementsDates.push(new Date().toISOString());
+      //add date
+      currentAccount.movementsDates.push(new Date().toISOString());
 
-    displayMovement(currentAccount);
-    //Display Balance
-    calcPrintBalance(currentAccount);
-    //Display Summary
-    calcDisplaySummary(currentAccount);
+      displayMovement(currentAccount);
+      //Display Balance
+      calcPrintBalance(currentAccount);
+      //Display Summary
+      calcDisplaySummary(currentAccount);
+    }, 2500);
   }
   inputLoanAmount.value = '';
 });
